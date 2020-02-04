@@ -19,3 +19,30 @@ resource "aws_internet_gateway" "main" {
 
     tags = "${merge(var.vpc_tags, map("Name", format("%s", var.vpc_name)))}"
 }
+
+# Route Tables
+
+# Public route table
+resource "aws_route_table" "app_public_rt" {
+  vpc_id = "${aws_vpc.main.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.main.id}"
+  }
+
+  tags {
+    Name = "app_public"
+  }
+  
+}
+
+# Private Route Table
+resource "aws_default_route_table" "app_private_rt" {
+  default_route_table_id = "${aws_vpc.main.default_route_table_id}"
+ 
+  tags {
+    Name = "app_private"
+  }
+  
+}
