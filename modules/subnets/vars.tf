@@ -22,10 +22,16 @@ variable "subnets_public_count" {
   default     = 1
 }
 
+variable "subnets_tags" {
+  description = "Additional tags for the VPC"
+  default     = {}
+}
+
 variable "subnets_enable_nat_gateway" {
   description = "A boolean flag to enable/disable the creation of a NAT Gateway."
   default     = true
 }
+
 
 #################################################
 # Variables for building out a VPC
@@ -53,6 +59,11 @@ variable "vpc_enable_dns_support" {
 variable "vpc_create_internet_gateway" {
   description = "A boolean flag to enable/disable the creation of an Internet Gateway"
   default     = true
+}
+
+variable "vpc_tags" {
+  description = "Additional tags for the VPC"
+  default     = {}
 }
 
 ## Candidate names

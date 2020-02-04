@@ -22,6 +22,8 @@ resource "aws_subnet" "public_subnet" {
   cidr_block              = "${var.cidrs["public${count.index}"]}"
   map_public_ip_on_launch = true
   availability_zone       = "${data.aws_availability_zones.available.names[count.index]}"
+
+  tags = "${merge(var.subnets_tags, map("Name", format("%s_public${count.index}_subnet", var.vpc_name)))}"
 }
 
 resource "aws_subnet" "privateapp_subnet" {
@@ -30,6 +32,8 @@ resource "aws_subnet" "privateapp_subnet" {
   cidr_block              = "${var.cidrs["privateapp${count.index}"]}"
   map_public_ip_on_launch = true
   availability_zone       = "${data.aws_availability_zones.available.names[count.index]}"
+
+  tags = "${merge(var.subnets_tags, map("Name", format("%s_privateapp${count.index}_subnet", var.vpc_name)))}"
 }
 
 resource "aws_subnet" "privatedb_subnet" {
@@ -38,6 +42,9 @@ resource "aws_subnet" "privatedb_subnet" {
   cidr_block              = "${var.cidrs["privatedb${count.index}"]}"
   map_public_ip_on_launch = true
   availability_zone       = "${data.aws_availability_zones.available.names[count.index]}"
+
+  tags = "${merge(var.subnets_tags, map("Name", format("%s_privatedb${count.index}_subnet", var.vpc_name)))}"
+
 }
 
 ## Subnet & Route Table Association
@@ -59,6 +66,20 @@ resource "aws_route_table_association" "privatedb_assoc" {
   count          = "${var.subnets_private_count}"
   subnet_id      = "${aws_subnet.privatedb_subnet.*.id[count.index]}"
   route_table_id = "${module.vpc.default_private_rt_id}"
+}
+
+
+# Nat gateway 
+
+resource "aws_eip" "nat-eip" {
+  count = "${var.subnets_enable_nat_gateway}"
+  vpc      = true
+}
+
+resource "aws_nat_gateway" "nat-gw" {
+  count = "${var.subnets_enable_nat_gateway}"
+  allocation_id = "${aws_eip.nat-eip.*.id[count.index]}"
+  subnet_id = "${aws_subnet.public_subnet.*.id[count.index]}"
 }
 
 
