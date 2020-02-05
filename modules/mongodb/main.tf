@@ -37,25 +37,23 @@ module "subnets" {
 
 #Security groups
 
-resource "aws_security_group" "app_sg" {
-  name        = "app_sg"
-  description = "Used for access to the app instance"
+resource "aws_security_group" "mongodb_sg" {
+  name        = "mongodb_sg"
+  description = "Used for access to the mongodb instances"
   vpc_id      = "${module.vpc.vpc_id}"
 
-  #SSH
-
+  #mongodb related conf
   ingress {
-    from_port   = 22
-    to_port     = 22
+    from_port   = 27019
+    to_port     = 27019
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  #HTTP
-
+  
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 27017
+    to_port     = 27017
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -76,16 +74,32 @@ resource "aws_security_group" "app_sg" {
 # }
 
 
-resource "aws_instance" "app_server" {
-  instance_type = "${var.app_instance_type}"
-  ami           = "${var.app_ami}"
+resource "aws_instance" "mongodb_instances" {
+  instance_type = "${var.mongo_instance_type}"
+  ami           = "${var.mongo_ami}"
 
   tags {
     Name = "wp_dev"
   }
 
   #key_name               = "${aws_key_pair.wp_auth.id}"
-  vpc_security_group_ids = ["${aws_security_group.app_sg.id}"]
-  subnet_id              = "${module.subnets.public_subnet_ids}"
-  user_data = "${file("./templates/user_data.tpl")}"
+  vpc_security_group_ids = ["${aws_security_group.mongodb_sg.id}"]
+  subnet_id              = "${module.subnets.privatedb_subnet_ids[0]}"
+  user_data = "${file("./files/user_data.sh")}"
+}
+
+resource "aws_ebs_volume" "mongodb_volume" {
+  availability_zone = "us-east-1a"
+  size              = "${var.mongo_volume_size}"
+  type = "${var.mongo_volume_type}"
+
+  tags = {
+    Name = "mongodb_volume"
+  }
+}
+
+resource "aws_volume_attachment" "ebs_att" {
+  device_name = "/dev/sdh"
+  volume_id   = "${aws_ebs_volume.mongodb_volume.id}"
+  instance_id = "${aws_instance.mongodb_instances.id}"
 }

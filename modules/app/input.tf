@@ -20,10 +20,7 @@ variable "cidrs" {
   type = "map"
 }
 
-variable "subnets_target_vpc_id" {}
-variable "subnets_target_vpc_igw_id" {}
-variable "public_route_table_id" {}
-variable "default_rotue_table_id" {}
+
 #################################################
 # Variables for setting up subnets and routing
 #################################################

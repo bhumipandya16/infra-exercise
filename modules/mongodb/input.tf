@@ -1,8 +1,38 @@
+
+#################################################
+# Variables for setting up a MongoDB instance
+#################################################
+variable "mongo_count" {
+    description = "How many mongodb instances to create."
+    default = 1
+}
+
+variable "mongo_ami" {
+    description = "The ami to use for the mongodb instance. Here we're just using an Ubuntu 14.04 LTS public image."
+    default = "ami-4d202037"
+}
+
+variable "mongo_instance_type" {
+    description = "The instance type to use for the mongodb instance."
+    default = "t2.small"
+}
+
+variable "mongo_volume_type" {
+    description = "The volume type to use for data storage on the mongodb instance."
+    default = "gp2"
+}
+
+variable "mongo_volume_size" {
+    description = "The volume size to use for the mongodb instance."
+    default = 10
+}
+
 data "aws_availability_zones" "available" {}
 
 variable "cidrs" {
   type = "map"
 }
+
 
 #################################################
 # Variables for setting up subnets and routing
@@ -33,13 +63,8 @@ variable "subnets_enable_nat_gateway" {
 }
 
 
-variable "subnets_target_vpc_id" {}
-variable "subnets_target_vpc_igw_id" {}
-variable "public_route_table_id" {}
-variable "default_rotue_table_id" {}
-
 #################################################
-# Vamongodbriables for building out a VPC
+# Variables for building out a VPC
 #################################################
 variable "vpc_name" {
   description = "Name of the VPC. Examples include 'prod', 'dev', 'mgmt', etc."
