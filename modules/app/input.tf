@@ -8,17 +8,58 @@ variable "app_instance_type" {
     default = "t2.small"
 }
 
-variable "app_associate_public_ip_address" {
-    description = "Associate a public ip address with an instance in a VPC. Boolean value."
-    default = true
+# variable "app_associate_public_ip_address" {
+#     description = "Associate a public ip address with an instance in a VPC. Boolean value."
+#     default = true
+# }
+
+
+variable "app_vpc_id" {}
+variable "app_public_subnet_ids" {
+  default = []  
+}
+
+variable "app_privateapp_subnet_ids" {
+  default = []  
+}
+
+variable "app_provisioning_key" {}
+variable "app_associate_public_ip_address" {}
+variable "mongo_address" {}
+
+variable "app_tags" {
+  description = "Additional tags for the application instance"
+  default     = {}
 }
 
 
-data "aws_availability_zones" "available" {}
+variable "elb_healthy_threshold" {}
+variable "elb_unhealthy_threshold" {}
+variable "elb_timeout" {}
+variable "elb_interval" {}
 
-variable "cidrs" {
-  type = "map"
+variable "asg_max" {
+  default = "2"
 }
+variable "asg_min" {
+  default = "1"
+}
+variable "asg_grace" {
+  default = "300"
+}
+variable "asg_hct" {
+  default = "EC2"
+}
+variable "asg_cap" {
+  default = "2"
+}
+
+
+# data "aws_availability_zones" "available" {}
+
+# variable "cidrs" {
+#   type = "map"
+# }
 
 
 #################################################

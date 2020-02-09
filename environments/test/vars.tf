@@ -16,6 +16,9 @@ variable "provisioning_key" {
     default = ""
 }
 
+# variable "key_name" {}
+# variable "public_key_path" {}
+
 #################################################
 # Variables for building out a VPC
 #################################################
@@ -47,6 +50,10 @@ variable "vpc_create_internet_gateway" {
 #################################################
 # Variables for setting up subnets and routing
 #################################################
+variable "cidrs" {
+  type = "map"
+}
+
 variable "subnets_az_state_filter" {
     description = "This value can be used to filter Availability Zones to use when setting up network resources. Let's only use available AZs as *data* sources"
     default = "available"
@@ -112,3 +119,10 @@ variable "app_associate_public_ip_address" {
     description = "Associate a public ip address with an instance in a VPC. Boolean value."
     default = true
 }
+
+
+variable "elb_healthy_threshold" {}
+variable "elb_unhealthy_threshold" {}
+variable "elb_timeout" {}
+variable "elb_interval" {}
+

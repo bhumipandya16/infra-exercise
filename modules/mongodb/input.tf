@@ -27,11 +27,26 @@ variable "mongo_volume_size" {
     default = 10
 }
 
-data "aws_availability_zones" "available" {}
-
-variable "cidrs" {
-  type = "map"
+variable "mongo_vpc_id" {}
+variable "mongo_subnet" { 
+  default = []  
 }
+variable "mongo_app_sg" {
+  default = ""
+}
+
+variable "mongo_provisioning_key" {}
+
+variable "mongo_tags" {
+  description = "Additional tags for the application instance"
+  default     = {}
+}
+
+# data "aws_availability_zones" "available" {}
+
+# variable "cidrs" {
+#   type = "map"
+# }
 
 
 #################################################
