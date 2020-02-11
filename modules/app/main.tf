@@ -71,12 +71,17 @@ resource "aws_key_pair" "app_auth" {
   public_key = "${var.app_provisioning_key}"
 }
 
+## challange faced when mongo and app instaces are build userdata script was not having mongodb ip address. 
+# template file data and .rendered attribute helped to address the challange to pass one module output to another mondue data file
+
 data "template_file" "userdata_file" {
   template = "${file("${path.module}/templates/user_data.tpl")}"
   vars = {
     mongo_address = "${var.mongo_address}"
   } 
 }
+
+# Bastion host to connect over public internet to validate the private instances
 
 resource "aws_instance" "bastionhost_app_server" {
   instance_type = "${var.app_instance_type}"

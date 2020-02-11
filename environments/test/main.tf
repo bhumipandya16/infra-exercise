@@ -106,7 +106,8 @@ module "app" {
         Name        = "App01"
         Owner       = "${var.candidate_name}"
         Environment = "${var.environment}"
-        Mongoaddress = "${module.mongodb.mongo_private_ip}"
+        # checking that mongodb ip address is being set as tag for debug purpose
+        #Mongoaddress = "${module.mongodb.mongo_private_ip}"
         Type        = "App"
     }
 }
